@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "firecrawl-mcp": {
+      "command": "npx",
+      "args": ["-y", "firecrawl-mcp"],
+      "env": {
+        "FIRECRAWL_API_KEY": "YOUR_FIRECRAWL_API_KEY_HERE"
+      }
+    },
+    "anthropic-mcp": {
+      "command": "npx", 
+      "args": ["-y", "@anthropic-ai/mcp-server-anthropic"],
+      "env": {
+        "ANTHROPIC_API_KEY": "YOUR_ANTHROPIC_API_KEY_HERE"
+      }
+    }
+  }
+}
