@@ -1,4 +1,5 @@
 {
+  "name": "claude-education-platform",
   "framework": "nextjs",
   "buildCommand": "npm run build",
   "outputDirectory": ".next",
