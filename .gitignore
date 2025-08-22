@@ -36,6 +36,13 @@ ENV/
 node_modules/
 frontend/node_modules/
 
+# Frontend
+frontend/.next/
+frontend/.env.local
+frontend/.env.production
+frontend/.env.development
+frontend/.vercel/
+
 # IDE
 .vscode/
 .idea/
