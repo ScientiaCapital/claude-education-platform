@@ -1,0 +1,92 @@
+{
+  "chatbot_basics": {
+    "title": "Fundamentos de Chatbots",
+    "age_group": "10-16",
+    "duration": "60 min",
+    "objectives": [
+      "Entender qué es un chatbot",
+      "Conocer casos de uso reales",
+      "Crear primer chatbot simple"
+    ],
+    "prerequisites": [],
+    "activities": [
+      "Conversar con diferentes chatbots",
+      "Diseñar personalidad de chatbot",
+      "Programar respuestas básicas"
+    ],
+    "difficulty": "beginner",
+    "category": "chatbot"
+  },
+  "model_training": {
+    "title": "Entrenar tu Primer Modelo",
+    "age_group": "12-16",
+    "duration": "90 min",
+    "objectives": [
+      "Comprender machine learning básico",
+      "Preparar datos de entrenamiento",
+      "Entrenar modelo simple"
+    ],
+    "prerequisites": ["chatbot_basics"],
+    "activities": [
+      "Recolectar datos de ejemplo",
+      "Usar Teachable Machine",
+      "Integrar modelo en chatbot"
+    ],
+    "difficulty": "intermediate",
+    "category": "ai_training"
+  },
+  "python_basics": {
+    "title": "Python para IA",
+    "age_group": "10-16",
+    "duration": "75 min",
+    "objectives": [
+      "Aprender sintaxis básica de Python",
+      "Entender variables y funciones",
+      "Crear scripts simples para IA"
+    ],
+    "prerequisites": [],
+    "activities": [
+      "Escribir primer programa Python",
+      "Crear calculadora simple",
+      "Hacer bot que responda preguntas"
+    ],
+    "difficulty": "beginner",
+    "category": "programming"
+  },
+  "advanced_chatbots": {
+    "title": "Chatbots Inteligentes",
+    "age_group": "14-18",
+    "duration": "120 min",
+    "objectives": [
+      "Integrar APIs de IA",
+      "Manejar contexto conversacional",
+      "Deplojar chatbot en la web"
+    ],
+    "prerequisites": ["chatbot_basics", "python_basics"],
+    "activities": [
+      "Conectar chatbot a Claude API",
+      "Implementar memoria conversacional",
+      "Publicar bot en Vercel"
+    ],
+    "difficulty": "advanced",
+    "category": "chatbot"
+  },
+  "data_science_intro": {
+    "title": "Ciencia de Datos para Niños",
+    "age_group": "12-16",
+    "duration": "90 min",
+    "objectives": [
+      "Entender qué son los datos",
+      "Aprender a visualizar información",
+      "Hacer predicciones simples"
+    ],
+    "prerequisites": ["python_basics"],
+    "activities": [
+      "Analizar datos de videojuegos favoritos",
+      "Crear gráficas con matplotlib",
+      "Predecir tendencias"
+    ],
+    "difficulty": "intermediate",
+    "category": "ai_training"
+  }
+}
