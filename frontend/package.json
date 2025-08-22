@@ -11,6 +11,7 @@
     "db:generate": "drizzle-kit generate"
   },
   "dependencies": {
+    "@ai-sdk/anthropic": "^2.0.6",
     "@ai-sdk/openai": "^0.0.66",
     "@vercel/postgres": "^0.10.0",
     "ai": "^3.4.32",

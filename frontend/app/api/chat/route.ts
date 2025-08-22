@@ -1,4 +1,4 @@
-import { openai } from '@ai-sdk/openai'
+import { anthropic } from '@ai-sdk/anthropic'
 import { streamText } from 'ai'
 
 // Allow streaming responses up to 30 seconds
@@ -77,7 +77,7 @@ Encourage hands-on experimentation and celebrate progress.
 
   try {
     const result = await streamText({
-      model: openai('gpt-4-turbo'),
+      model: anthropic('claude-3-5-sonnet-20241022'),
       system: systemPrompt,
       messages: [
         {
@@ -93,7 +93,7 @@ Encourage hands-on experimentation and celebrate progress.
       maxTokens: 1000,
     })
 
-    return result.toAIStreamResponse()
+    return result.toDataStreamResponse()
   } catch (error) {
     console.error('Error in chat API:', error)
     return new Response('Error processing request', { status: 500 })
