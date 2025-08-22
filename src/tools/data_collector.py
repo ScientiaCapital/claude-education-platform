@@ -59,15 +59,14 @@ class DataCollector:
         
         for url in urls_to_scrape[:5]:  # Limit to 5 URLs
             try:
-                scraped = self.firecrawl.scrape_url(
-                    url=url,
-                    params={
-                        "formats": ["markdown", "html"],
-                        "includeTags": ["p", "h1", "h2", "h3", "li"],
-                        "excludeTags": ["nav", "footer", "script"]
-                    }
-                )
-                results["firecrawl_data"].append(scraped)
+                scraped = self.firecrawl.scrape(url)
+                if hasattr(scraped, 'markdown') and scraped.markdown:
+                    results["firecrawl_data"].append({
+                        "url": url,
+                        "markdown": scraped.markdown,
+                        "title": getattr(scraped, 'title', ''),
+                        "content": scraped.markdown
+                    })
             except Exception as e:
                 print(f"Firecrawl error for {url}: {e}")
         

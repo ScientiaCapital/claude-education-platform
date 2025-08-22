@@ -85,20 +85,14 @@ def test_firecrawl_sdk():
         app = FirecrawlApp(api_key=firecrawl_api_key)
         
         # Test scraping a simple page
-        result = app.scrape_url(
-            url="https://example.com",
-            params={
-                "formats": ["markdown"],
-                "maxDepth": 1
-            }
-        )
+        result = app.scrape("https://example.com")
         
-        if result.get('success'):
+        if hasattr(result, 'markdown') and result.markdown:
             print("✅ Firecrawl SDK working!")
-            print(f"📄 Scraped content preview: {result.get('markdown', '')[:100]}...")
+            print(f"📄 Scraped content preview: {result.markdown[:100]}...")
             return True
         else:
-            print(f"❌ Firecrawl returned unsuccessful result: {result}")
+            print(f"❌ Firecrawl scraping failed: {result}")
             return False
             
     except Exception as e:
