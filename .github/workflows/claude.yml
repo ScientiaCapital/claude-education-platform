@@ -1,56 +1,64 @@
-name: Claude Code CI
+name: Claude Code
 
 on:
-  pull_request:
-    types: [opened, synchronize, reopened]
   issue_comment:
     types: [created]
-
-permissions:
-  contents: write
-  pull-requests: write
-  issues: write
+  pull_request_review_comment:
+    types: [created]
+  issues:
+    types: [opened, assigned]
+  pull_request_review:
+    types: [submitted]
 
 jobs:
-  claude-code:
-    runs-on: ubuntu-latest
+  claude:
     if: |
-      (github.event_name == 'pull_request' && github.event.pull_request.draft == false) ||
-      (github.event_name == 'issue_comment' && github.event.issue.pull_request && contains(github.event.comment.body, '@claude'))
-    
+      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
+      (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude')) ||
+      (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude')) ||
+      (github.event_name == 'issues' && (contains(github.event.issue.body, '@claude') || contains(github.event.issue.title, '@claude')))
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+      issues: read
+      id-token: write
+      actions: read # Required for Claude to read CI results on PRs
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
-      
-      - name: Setup Python
-        uses: actions/setup-python@v4
+          fetch-depth: 1
+
+      - name: Run Claude Code
+        id: claude
+        uses: anthropics/claude-code-action@beta
         with:
-          python-version: '3.11'
-      
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-      
-      - name: Run Claude Code Review
-        uses: anthropics/claude-code-action@main
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          anthropic-api-key: ${{ secrets.ANTHROPIC_API_KEY }}
-          model: claude-3-5-sonnet-20241022
-          max-tokens: 4096
-          temperature: 0.2
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+
+          # This is an optional setting that allows Claude to read CI results on PRs
+          additional_permissions: |
+            actions: read
           
-      - name: Run tests
-        if: github.event_name == 'pull_request'
-        run: |
-          python -m pytest tests/ || true
+          # Optional: Specify model (defaults to Claude Sonnet 4, uncomment for Claude Opus 4)
+          # model: "claude-opus-4-20250514"
           
-      - name: Check code quality
-        if: github.event_name == 'pull_request'
-        run: |
-          # Add linting and code quality checks here
-          echo "Code quality checks completed"
+          # Optional: Customize the trigger phrase (default: @claude)
+          # trigger_phrase: "/claude"
+          
+          # Optional: Trigger when specific user is assigned to an issue
+          # assignee_trigger: "claude-bot"
+          
+          # Optional: Allow Claude to run specific commands
+          # allowed_tools: "Bash(npm install),Bash(npm run build),Bash(npm run test:*),Bash(npm run lint:*)"
+          
+          # Optional: Add custom instructions for Claude to customize its behavior for your project
+          # custom_instructions: |
+          #   Follow our coding standards
+          #   Ensure all new code has tests
+          #   Use TypeScript for new files
+          
+          # Optional: Custom environment variables for Claude
+          # claude_env: |
+          #   NODE_ENV: test
+
