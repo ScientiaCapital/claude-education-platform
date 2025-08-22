@@ -1,0 +1,135 @@
+# Model Configuration for Claude Education Platform
+# Easy switching between different AI models
+
+models:
+  # ========== DeepSeek Models ==========
+  deepseek-chat:
+    provider: "deepseek"
+    model_id: "deepseek-chat"
+    display_name: "DeepSeek Chat V3"
+    description: "Fast general-purpose model, great for coding and tutoring"
+    context_window: 64000
+    max_output: 4096
+    cost:
+      input: 0.14  # per 1M tokens
+      output: 0.28  # per 1M tokens
+    capabilities:
+      - text_generation
+      - code_generation
+      - tutoring
+      - translation
+    best_for: "General tutoring, coding help, quick responses"
+    
+  deepseek-reasoner:
+    provider: "deepseek"
+    model_id: "deepseek-reasoner"
+    display_name: "DeepSeek R1 Reasoner"
+    description: "Advanced reasoning model for complex problem-solving"
+    context_window: 64000
+    max_output: 8192
+    cost:
+      input: 0.55  # per 1M tokens
+      output: 2.19  # per 1M tokens
+    capabilities:
+      - advanced_reasoning
+      - math_solving
+      - code_debugging
+      - step_by_step_thinking
+    best_for: "Math problems, complex logic, detailed explanations"
+
+  deepseek-coder:
+    provider: "deepseek"
+    model_id: "deepseek-coder"
+    display_name: "DeepSeek Coder V2"
+    description: "Specialized for programming and code generation"
+    context_window: 128000
+    max_output: 8192
+    cost:
+      input: 0.14
+      output: 0.28
+    capabilities:
+      - code_generation
+      - code_completion
+      - debugging
+      - code_review
+    best_for: "Writing code, debugging, code explanations"
+
+  # ========== Local DeepSeek Models (for fine-tuning) ==========
+  deepseek-1.5b-local:
+    provider: "local_transformers"
+    model_id: "deepseek-ai/deepseek-llm-1.5b-base"
+    display_name: "DeepSeek 1.5B (Local)"
+    description: "Small model for local fine-tuning experiments"
+    context_window: 4096
+    max_output: 2048
+    hardware_requirements:
+      min_ram: "4GB"
+      recommended_ram: "8GB"
+      gpu_vram: "2GB (optional)"
+    fine_tunable: true
+    best_for: "Learning fine-tuning, quick experiments"
+
+  deepseek-7b-local:
+    provider: "local_transformers"
+    model_id: "deepseek-ai/deepseek-llm-7b-base"
+    display_name: "DeepSeek 7B (Local)"
+    description: "Medium model for serious fine-tuning"
+    context_window: 4096
+    max_output: 2048
+    hardware_requirements:
+      min_ram: "16GB"
+      recommended_ram: "32GB"
+      gpu_vram: "8GB"
+    fine_tunable: true
+    best_for: "Custom tutoring models, domain-specific training"
+
+  # ========== Other Useful Models ==========
+  qwen2.5-coder:
+    provider: "huggingface"
+    model_id: "Qwen/Qwen2.5-Coder-7B-Instruct"
+    display_name: "Qwen 2.5 Coder"
+    description: "Alibaba's coding model"
+    context_window: 32768
+    max_output: 8192
+    capabilities:
+      - code_generation
+      - multi_language_code
+    best_for: "Python, JavaScript, multi-language coding"
+
+  mistral-7b:
+    provider: "huggingface"
+    model_id: "mistralai/Mistral-7B-Instruct-v0.3"
+    display_name: "Mistral 7B"
+    description: "Fast, efficient open model"
+    context_window: 32768
+    max_output: 8192
+    capabilities:
+      - text_generation
+      - instruction_following
+    best_for: "General tutoring, creative tasks"
+
+# Model Selection Profiles (for educational use)
+profiles:
+  beginner_coding:
+    recommended_models:
+      - deepseek-chat  # Fast and clear explanations
+      - deepseek-coder  # When writing actual code
+    fallback: mistral-7b
+    
+  advanced_math:
+    recommended_models:
+      - deepseek-reasoner  # Step-by-step problem solving
+      - deepseek-chat  # Quick clarifications
+    fallback: qwen2.5-coder
+    
+  homework_help:
+    recommended_models:
+      - deepseek-chat  # General questions
+      - deepseek-reasoner  # Complex problems
+    fallback: mistral-7b
+    
+  project_building:
+    recommended_models:
+      - deepseek-coder  # Code generation
+      - deepseek-chat  # Architecture discussions
+    fallback: qwen2.5-coder
