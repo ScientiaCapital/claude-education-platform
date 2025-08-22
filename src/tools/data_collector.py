@@ -35,15 +35,14 @@ class DataCollector:
             exa_response = self.exa.search(
                 query=query,
                 num_results=max_results,
-                text=True,
-                highlights=True
+                include_text=["summary"]
             )
             results["exa_data"] = [
                 {
                     "url": result.url,
                     "title": result.title,
-                    "text": result.text,
-                    "highlights": result.highlights
+                    "text": result.summary,
+                    "summary": result.summary
                 }
                 for result in exa_response.results
             ]
