@@ -22,10 +22,20 @@ if "student_id" not in st.session_state:
     st.session_state.student_id = str(uuid.uuid4())
 
 # Initialize database tables
-try:
-    db_manager.create_tables()
-except Exception as e:
-    st.error(f"Database initialization error: {e}")
+@st.cache_resource
+def init_database():
+    """Initialize database tables on first run"""
+    try:
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        loop.run_until_complete(db_manager.create_tables())
+        return True
+    except Exception as e:
+        st.error(f"Database initialization error: {e}")
+        return False
+
+# Call initialization
+init_database()
 
 # Sidebar for tutor selection
 st.sidebar.title("🎓 Elige tu Tutor")
@@ -107,11 +117,13 @@ with col1:
                 })
                 
                 # Record progress (simple completion for now)
-                tutor.record_progress(
-                    student_id=st.session_state.student_id,
-                    topic=topic,
-                    completion_score=1.0,  # Full completion for viewing lesson
-                    time_spent=5  # Estimated 5 minutes per lesson
+                loop.run_until_complete(
+                    tutor.record_progress(
+                        student_id=st.session_state.student_id,
+                        topic=topic,
+                        completion_score=1.0,  # Full completion for viewing lesson
+                        time_spent=5  # Estimated 5 minutes per lesson
+                    )
                 )
                 
             except Exception as e:
@@ -121,7 +133,11 @@ with col1:
 with col2:
     if st.button("📊 Ver mi progreso"):
         try:
-            progress = tutor.get_student_history(st.session_state.student_id)
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            progress = loop.run_until_complete(
+                tutor.get_student_history(st.session_state.student_id)
+            )
             if progress:
                 df = pd.DataFrame([{
                     "Tema": p.topic,

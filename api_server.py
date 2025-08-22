@@ -4,10 +4,57 @@ from pydantic import BaseModel
 from typing import List, Dict, Any, Optional
 import asyncio
 import uvicorn
+import os
+import sys
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
+
 from src.agents.tutor_agent import ChatbotTutor, ModelTrainingTutor, ProgrammingTutor
 from src.rag.database import db_manager
 
 app = FastAPI(title="Claude Education API", version="1.0.0")
+
+# Validate environment variables on startup
+def validate_environment():
+    """Check that all required environment variables are set"""
+    required_vars = {
+        'ANTHROPIC_API_KEY': 'Claude API key for AI responses',
+        'DATABASE_URL': 'PostgreSQL connection string',
+        'FIRECRAWL_API_KEY': 'Firecrawl API key for web scraping',
+    }
+    
+    optional_vars = {
+        'EXA_API_KEY': 'Exa API key for semantic search (optional)',
+        'TAVILY_API_KEY': 'Tavily API key for research (optional)',
+    }
+    
+    missing_required = []
+    missing_optional = []
+    
+    for var, description in required_vars.items():
+        if not os.getenv(var):
+            missing_required.append(f"  - {var}: {description}")
+    
+    for var, description in optional_vars.items():
+        if not os.getenv(var):
+            missing_optional.append(f"  - {var}: {description}")
+    
+    if missing_required:
+        print("❌ Missing required environment variables:")
+        print("\n".join(missing_required))
+        print("\n💡 Please set these in your .env file or environment")
+        sys.exit(1)
+    
+    if missing_optional:
+        print("⚠️  Missing optional environment variables (some features may be limited):")
+        print("\n".join(missing_optional))
+    
+    print("✅ All required environment variables are configured")
+
+# Validate on import
+validate_environment()
 
 # Enable CORS for frontend integration
 app.add_middleware(
@@ -46,7 +93,7 @@ class TeachTopicRequest(BaseModel):
 async def startup_event():
     """Initialize database tables on startup"""
     try:
-        db_manager.create_tables()
+        await db_manager.create_tables()
         print("✅ Database tables initialized successfully")
     except Exception as e:
         print(f"⚠️  Database initialization warning: {e}")
@@ -121,7 +168,7 @@ async def get_student_progress(student_id: str):
     """Get student's learning progress"""
     try:
         tutor = tutors["chatbot"]  # Any tutor can access progress
-        progress = tutor.get_student_history(student_id)
+        progress = await tutor.get_student_history(student_id)
         
         return {
             "student_id": student_id,
@@ -155,7 +202,7 @@ async def record_student_progress(
             
         tutor = tutors[tutor_type]
         
-        progress = tutor.record_progress(
+        progress = await tutor.record_progress(
             student_id=student_id,
             topic=topic,
             completion_score=completion_score,

@@ -5,11 +5,45 @@ import { streamText } from 'ai'
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30
 
+// Check if Python backend is available
+const PYTHON_API_URL = process.env.PYTHON_API_URL || 'http://localhost:8000'
+const USE_PYTHON_BACKEND = process.env.USE_PYTHON_BACKEND === 'true'
+
 export async function POST(req: Request) {
   const { messages, tutorType, difficulty } = await req.json()
 
   // Get the latest user message
   const userMessage = messages[messages.length - 1]?.content || ''
+
+  // Try to use Python backend first if configured
+  if (USE_PYTHON_BACKEND) {
+    try {
+      const response = await fetch(`${PYTHON_API_URL}/api/chat`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          messages,
+          tutor_type: tutorType,
+          difficulty,
+          student_id: req.headers.get('x-student-id') || undefined
+        }),
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        // Return as a simple text response for now
+        // In production, you'd want to properly stream this
+        return new Response(data.response, {
+          headers: { 'Content-Type': 'text/plain' }
+        })
+      }
+    } catch (error) {
+      console.error('Python backend error, falling back to direct AI:', error)
+      // Fall through to direct AI integration
+    }
+  }
 
   // Define tutor personalities based on our Python tutors
   const tutorPrompts = {

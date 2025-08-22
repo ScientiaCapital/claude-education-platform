@@ -75,7 +75,7 @@ Teaching style:
         
         # Step 6: Record interaction in database
         try:
-            db_manager.record_interaction(
+            await db_manager.record_interaction(
                 student_id=student_id,
                 question=student_question or f"General topic: {topic}",
                 answer=enhanced_answer,
@@ -133,18 +133,18 @@ Activities for {topic}:"""
         activities = response.content.split('\n\n')
         return [activity.strip() for activity in activities if activity.strip()]
 
-    def record_progress(self, student_id: str, topic: str, completion_score: float, time_spent: int):
+    async def record_progress(self, student_id: str, topic: str, completion_score: float, time_spent: int):
         """Record student progress"""
         try:
-            return db_manager.add_student_progress(student_id, topic, completion_score, time_spent)
+            return await db_manager.add_student_progress(student_id, topic, completion_score, time_spent)
         except Exception as e:
             print(f"Error recording progress: {e}")
             return None
 
-    def get_student_history(self, student_id: str):
+    async def get_student_history(self, student_id: str):
         """Get student's learning history"""
         try:
-            return db_manager.get_student_progress(student_id)
+            return await db_manager.get_student_progress(student_id)
         except Exception as e:
             print(f"Error getting student history: {e}")
             return []

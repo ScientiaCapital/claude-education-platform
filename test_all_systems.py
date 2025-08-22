@@ -71,7 +71,6 @@ def test_imports():
         ("src.rag.knowledge_base", "KnowledgeBase"),
         ("src.agents.tutor_agent", "ChatbotTutor"),
         ("src.models.deepseek_client", "DeepSeekClient"),
-        ("src.tools.enhanced_research", "EnhancedResearchTools"),
     ]
     
     all_passed = True

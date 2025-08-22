@@ -133,13 +133,10 @@ def test_database_connection():
     print("=" * 50)
     
     try:
-        from src.rag.database import DatabaseManager
+        from src.rag.database import AsyncDatabaseManager, db_manager
         
-        db_manager = DatabaseManager()
-        print("✅ DatabaseManager imported successfully")
-        
-        # Try to create tables (this will work even without a real DB connection)
-        # db_manager.create_tables()
+        print("✅ AsyncDatabaseManager imported successfully")
+        print("✅ Database manager instance created")
         print("✅ Database models are properly configured")
         
         return True
