@@ -1,4 +1,5 @@
 import { anthropic } from '@ai-sdk/anthropic'
+import { openai } from '@ai-sdk/openai'
 import { streamText } from 'ai'
 
 // Allow streaming responses up to 30 seconds
@@ -75,27 +76,64 @@ Use the Socratic method - ask questions to guide learning rather than giving dir
 Encourage hands-on experimentation and celebrate progress.
 `
 
+  // Determine which AI model to use based on environment variables
+  const useAnthropic = process.env.ANTHROPIC_API_KEY && process.env.ANTHROPIC_API_KEY !== ''
+  const useOpenAI = process.env.OPENAI_API_KEY && process.env.OPENAI_API_KEY !== ''
+
+  let result
+  
   try {
-    const result = await streamText({
-      model: anthropic('claude-3-5-sonnet-20241022'),
-      system: systemPrompt,
-      messages: [
-        {
-          role: 'system',
-          content: 'You are now acting as the selected tutor. Respond to the student\'s question using your specialized knowledge and teaching style.'
-        },
-        ...messages.map((msg: any) => ({
+    // Try Anthropic first if available
+    if (useAnthropic) {
+      try {
+        result = await streamText({
+          model: anthropic('claude-3-5-sonnet-20241022'),
+          system: systemPrompt,
+          messages: messages.map((msg: any) => ({
+            role: msg.role,
+            content: msg.content
+          })),
+          temperature: 0.7,
+          maxTokens: 1000,
+        })
+        console.log('Using Anthropic Claude for response')
+      } catch (anthropicError) {
+        console.error('Anthropic API error, falling back to OpenAI:', anthropicError)
+        // Fall through to OpenAI
+      }
+    }
+    
+    // Use OpenAI as fallback or primary if Anthropic not available
+    if (!result && useOpenAI) {
+      result = await streamText({
+        model: openai('gpt-4-turbo'),
+        system: systemPrompt,
+        messages: messages.map((msg: any) => ({
           role: msg.role,
           content: msg.content
-        }))
-      ],
-      temperature: 0.7,
-      maxTokens: 1000,
-    })
+        })),
+        temperature: 0.7,
+        maxTokens: 1000,
+      })
+      console.log('Using OpenAI GPT-4 for response')
+    }
+    
+    if (!result) {
+      throw new Error('No AI API keys configured. Please set either ANTHROPIC_API_KEY or OPENAI_API_KEY')
+    }
 
     return result.toDataStreamResponse()
   } catch (error) {
     console.error('Error in chat API:', error)
-    return new Response('Error processing request', { status: 500 })
+    return new Response(
+      JSON.stringify({ 
+        error: 'Error processing request', 
+        details: error instanceof Error ? error.message : 'Unknown error' 
+      }), 
+      { 
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+      }
+    )
   }
 }
