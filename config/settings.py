@@ -7,6 +7,7 @@ class Settings(BaseSettings):
     firecrawl_api_key: str
     exa_api_key: str
     tavily_api_key: str
+    deepseek_api_key: Optional[str] = None
     
     # Database
     database_url: str

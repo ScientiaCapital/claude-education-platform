@@ -87,7 +87,7 @@ Encourage hands-on experimentation and celebrate progress.
     if (useAnthropic) {
       try {
         result = await streamText({
-          model: anthropic('claude-3-5-sonnet-20241022'),
+          model: anthropic('claude-3-5-sonnet-20241022') as any,
           system: systemPrompt,
           messages: messages.map((msg: any) => ({
             role: msg.role,
@@ -106,7 +106,7 @@ Encourage hands-on experimentation and celebrate progress.
     // Use OpenAI as fallback or primary if Anthropic not available
     if (!result && useOpenAI) {
       result = await streamText({
-        model: openai('gpt-4-turbo'),
+        model: openai('gpt-4-turbo') as any,
         system: systemPrompt,
         messages: messages.map((msg: any) => ({
           role: msg.role,
