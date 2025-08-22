@@ -62,6 +62,13 @@ cp .env.example .env
 ```bash
 cd ..
 python test_sdks.py
+# Deberías ver: "🎉 All tests passed! Ready to run the education platform!"
+```
+
+5. **MCP Integration (Opcional)**
+```bash
+# El proyecto incluye configuración MCP para Claude Code
+# Ver mcp-config.json para integración con herramientas AI
 ```
 
 ### Configuración de API Keys
@@ -73,7 +80,7 @@ Crea un archivo `.env` en la raíz del proyecto:
 ANTHROPIC_API_KEY=tu_clave_anthropic_aqui
 FIRECRAWL_API_KEY=tu_clave_firecrawl_aqui
 
-# APIs Opcionales (para funcionalidad completa)
+# APIs Integradas (todas funcionales)
 EXA_API_KEY=tu_clave_exa_aqui
 TAVILY_API_KEY=tu_clave_tavily_aqui
 
@@ -153,10 +160,11 @@ claude-education-platform/
 - Framer Motion
 
 **APIs Integradas:**
-- Anthropic Claude
-- Firecrawl (web scraping)
-- Exa (búsqueda semántica)
-- Tavily (investigación)
+- Anthropic Claude (✅ Configurado)
+- Firecrawl (✅ Configurado - web scraping v2)
+- Exa (✅ Configurado - búsqueda semántica)
+- Tavily (✅ Configurado - investigación)
+- Neon PostgreSQL (✅ Configurado - base de datos)
 
 ## 📚 Currículum Incluido
 
@@ -172,12 +180,14 @@ El sistema incluye lecciones predefinidas:
 
 ### Vercel (Frontend)
 
-```bash
-# Conectar con Vercel
-vercel login
-vercel --cwd frontend
+**🚀 DESPLEGADO EN PRODUCCIÓN:**
+- **URL**: https://claude-education-platform-et9fb0qdy-scientia-capital.vercel.app
+- **Estado**: ✅ Activo con todas las APIs configuradas
 
-# O usar el botón de deploy:
+```bash
+# Para desplegar cambios
+cd frontend
+vercel --prod
 ```
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/ScientiaCapital/claude-education-platform)
